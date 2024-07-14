@@ -25,6 +25,8 @@ dist-ssr
 
 # Firebase configuration files
 /firebaseConfig.json
+firebase.json
+.firebaserc
 
 # Firebase Emulator Suite
 /.firebase
