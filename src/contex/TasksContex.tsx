@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext } from "react"
 import { useTasks } from "../hooks/useTasks"
-import { setFirebaseTasks } from "../firbase/api"
+import { setFirebaseTasks } from "../firebase/api"
 import { useAuthStateContext } from "./AuthContext"
 
 // Type for tasks context data
