@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { useAuthStateContext } from "../contex/AuthContext"
-import { getAllFirebaseTasks } from "../firbase/api"
+import { getAllFirebaseTasks } from "../firebase/api"
 
 type UseTaskResult = {
     tasks: string[],
