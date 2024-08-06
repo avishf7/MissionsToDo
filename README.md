@@ -1,14 +1,14 @@
 # MissionToDo
 
-MissionToDo is a personal web-based application designed to help you efficiently manage and organize your daily missions. It features **Mission Creation** for adding new missions with titles and descriptions, **Mission Tracking** to view and track your ongoing missions, and **User Management** to create and manage user accounts for personalization. The app has a **User-Friendly Interface** that offers a simple and intuitive experience.
+**MissionToDo** is a personal project designed to simplify task management and enhance user experience. It features:
 
+- **Task Management**: Add, edit, and delete tasks.
+- **User-Friendly Interface**: Intuitive and responsive design for a seamless user experience.
 ## Technologies Used
 
 - **Frontend:**
-  - [React](https://reactjs.org/)
-  - [JavaScript](https://www.javascript.com/)
-  - [HTML5](https://developer.mozilla.org/en-US/docs/Web/Guide/HTML/HTML5)
-  - [CSS3](https://developer.mozilla.org/en-US/docs/Web/CSS)
+  - [React]
+  - [TypeScript]
   
 - **Backend & Hosting:**
   - [Firebase](https://firebase.google.com/) - For backend services and hosting
