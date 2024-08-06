@@ -1,21 +1,26 @@
-import { createContext, ReactNode, useContext } from "react"
+import { createContext, ReactNode, useCallback, useContext } from "react"
 import { useTasks } from "../hooks/useTasks"
 import { setFirebaseTasks } from "../firebase/api"
 import { useAuthStateContext } from "./AuthContext"
+import { TaskData } from "../utils/types"
 
 // Type for tasks context data
 type TasksContextData = {
-    tasks: string[],
+    tasks: TaskData[],
     loading: boolean,
     error: string,
-    addTask: (task: string) => void,
+    addTask: (desc: string) => void,
     removeTask: (idToeRemove: number) => void
+    checkTask: (idToCheck: number) => void
 }
 
 const TasksContext = createContext<TasksContextData | undefined>(undefined)
 
+
 /**
- * TasksProvider component manages tasks state and provides addTask and removeTask functionalities.
+ * Provides tasks context to its children.
+ * Manages the tasks state and provides functions to add, remove, and check tasks.
+ *
  * @param props.children ReactNode containing child components wrapped by TasksProvider.
  */
 export const TasksProvider = (props : { children : ReactNode }) => {
@@ -23,25 +28,54 @@ export const TasksProvider = (props : { children : ReactNode }) => {
     const { tasks, setTasks, loading, error } = useTasks()
 
     /**
-     * Function to add a new task.
-     * @param task New task to be added.
+     * Updates the tasks in both Firebase and the local state.
+     *
+     * @param updateTasks - The new array of tasks to update.
+     * @returns A promise that resolves when the tasks are successfully updated in Firebase and the local state.
      */
-    const addTask = (task : string) => {
-        const newTasks = [...tasks, task]
-        setFirebaseTasks(username, newTasks)
-        .then(() => setTasks(newTasks))
-        .catch(() => alert("ERROR: failed to add a new task"))
+    const update = useCallback( (updateTasks: TaskData[]) => {
+        return setFirebaseTasks(username, updateTasks)
+            .then(() => setTasks(updateTasks))
+    },[username])
+
+    /**
+     * Adds a new task to the tasks list.
+     *
+     * @param desc - The description of the new task.
+     */
+    const addTask = (desc : string) => {
+        const updateTasks = [...tasks, {desc, isCompleted: false}]
+
+        update(updateTasks)
+        .catch(() => alert(`ERROR: failed to add a new task${desc}`))
     }
 
     /**
-     * Function to remove a task.
-     * @param idToRemove Index of the task to remove.
+     * Removes a task from the tasks list.
+     *
+     * @param idToRemove - The index of the task to remove.
      */
     const removeTask = (idToRemove : number) => {
-        const newTasks = tasks.filter((_, i) => i !== idToRemove)
-        setFirebaseTasks(username, newTasks)
-        .then(() => setTasks(newTasks))
-        .catch(() => alert("ERROR: failed to remove a task"))
+        const updateTasks = tasks.filter((_, i) => i !== idToRemove)
+
+        update(updateTasks)
+        .catch(() => alert(`ERROR: failed to remove a task${idToRemove}`))
+    }
+
+     /**
+     * Toggles the completion status of a task.
+     *
+     * @param idToCheck - The index of the task to check/uncheck.
+     */
+    const checkTask = (idToCheck : number) => {
+        const updateTasks = [...tasks] 
+        updateTasks[idToCheck] = {
+            ...tasks[idToCheck],
+            isCompleted: !tasks[idToCheck].isCompleted
+        }    
+
+        update(updateTasks)
+        .catch(() => alert(`ERROR: failed to toggle a task${idToCheck}`))
     }
 
     // Render TasksContext.Provider with tasks context data
@@ -51,7 +85,8 @@ export const TasksProvider = (props : { children : ReactNode }) => {
             loading,
             error,
             addTask,
-            removeTask
+            removeTask,
+            checkTask
         }}>
             {props.children}
         </TasksContext.Provider>
@@ -60,7 +95,7 @@ export const TasksProvider = (props : { children : ReactNode }) => {
 
 /**
  * Custom hook to access TasksContext data.
- * @returns TasksContextData containing tasks, loading, error, addTask, and removeTask functions.
+ * @returns TasksContextData.
  * @throws Error if used outside of a TasksProvider.
  */
 export const useTasksContext: () => TasksContextData = () => {

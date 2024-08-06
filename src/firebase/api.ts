@@ -1,5 +1,6 @@
 import { doc, getDoc, setDoc, updateDoc } from "firebase/firestore"
 import { db } from "./config"
+import { TaskData } from "../utils/types"
 
 /**
  * Retrieves all tasks associated with the user from Firestore.
@@ -8,7 +9,7 @@ import { db } from "./config"
  * @returns Promise resolving to an array of tasks.
  * @throws Error if there's an issue fetching or initializing tasks.
  */
-export const getAllFirebaseTasks = async (username: string): Promise<string[]> => {
+export const getAllFirebaseTasks = async (username: string): Promise<TaskData[]> => {
     try {
         // Reference to user document in Firestore
         const userDocRef = doc(db, "users", username)
@@ -19,7 +20,7 @@ export const getAllFirebaseTasks = async (username: string): Promise<string[]> =
             setDoc(userDocRef, { tasks: [] })
             return []
         } else {
-            return userDoc.data()?.tasks 
+            return userDoc.data()?.tasks
         }
     } catch (err) {
         console.error(`Error fetching tasks: ${err}`)
@@ -33,7 +34,7 @@ export const getAllFirebaseTasks = async (username: string): Promise<string[]> =
  * @param newTasks Updated tasks array to set in Firestore.
  * @throws Error if there's an issue updating tasks.
  */
-export const setFirebaseTasks = async (username : string, newTasks: string[]) => {
+export const setFirebaseTasks = async (username : string, newTasks: TaskData[]) => {
     try {
         // Reference to user document in Firestore
         const userDocRef = doc(db, "users", username)
