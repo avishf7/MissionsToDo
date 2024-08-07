@@ -1,5 +1,3 @@
-Here's the updated README with "toggle" added without bolding:
-
 # **MissionToDo**
 
 **MissionToDo** is a personal project designed to simplify task management and enhance user experience. It features:
